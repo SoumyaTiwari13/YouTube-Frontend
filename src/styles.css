@@ -1,0 +1,178 @@
+:root {
+  --header-h: 56px;
+  --sidebar-w: 240px;
+  font-family: system-ui, Arial;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.Heading{
+  color: white;
+  font-size: x-large;
+}
+
+body {
+  margin: 0;
+  background: #0f0f0f;
+  color: #fff;
+}
+
+#logo{
+  height: 30px;
+  
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.header {
+  height: var(--header-h);
+  display: flex;
+  align-items: center;
+  padding: 0 12px;
+  gap: 12px;
+  border-bottom: 1px solid #222;
+  position: sticky;
+  top: 0;
+  background: #0f0f0f;
+  z-index: 10;
+}
+
+.header input {
+  flex: 1;
+  padding: 8px 12px;
+  border-radius: 20px;
+  border: 1px solid #333;
+  background: #121212;
+  color: #e5dddd;
+}
+
+.header .btn {
+  padding: 8px 12px;
+  border: 1px solid #333;
+  border-radius: 8px;
+  background: #1a1a1a;
+  cursor: pointer;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: var(--sidebar-w) 1fr;
+}
+
+.sidebar {
+  border-right: 1px solid #222;
+  padding: 12px;
+  height: calc(100dvh - var(--header-h));
+  position: sticky;
+  top: var(--header-h);
+  overflow: auto;
+}
+
+.sidebar.hidden {
+  display: none;
+}
+
+.filters {
+  display: flex;
+  gap: 8px;
+  padding: 12px;
+  overflow-x: auto;
+  border-bottom: 1px solid #222;
+}
+
+.filters button {
+  padding: 6px 12px;
+  border-radius: 999px;
+  border: 1px solid #333;
+  background: #1a1a1a;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.grid {
+  padding: 12px;
+  display: grid;
+  gap: 16px;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+}
+
+.card {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.card img {
+  width: 100%;
+  aspect-ratio: 16/9;
+  object-fit: cover;
+}
+
+.card .meta {
+  padding: 10px;
+  display: grid;
+  gap: 4px;
+}
+
+.player {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px;
+  display: grid;
+  gap: 12px;
+}
+
+.text{
+  color: black;
+}
+
+.player video {
+  width: 100%;
+  max-height: 65dvh;
+  background: #000;
+}
+
+.row {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.comment-box {
+  display: grid;
+  gap: 10px;
+  color: black;
+
+}
+
+textarea {
+  width: 100%;
+  min-height: 80px;
+  padding: 8px;
+  background: #121212;
+  color: #e0d7d7;
+  border: 1px solid #333;
+  border-radius: 8px;
+}
+
+input,
+button {
+  color: #fff;
+}
+
+@media (max-width: 900px) {
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .sidebar {
+    display: none;
+  }
+}
