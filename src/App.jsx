@@ -1,17 +1,52 @@
-import { Outlet } from 'react-router-dom';
-import { useState } from 'react';
-import Header from './components/Header';
-import Sidebar from './components/Sidebar';
+import { createBrowserRouter } from "react-router-dom";
 
-export default function App() {
-  const [hide, setHide] = useState(false);
-  return (
-    <>
-      <Header onToggleSidebar={() => setHide(!hide)} />
-      <div className="layout">
-        <Sidebar hidden={hide} />
-        <main><Outlet /></main>
-      </div>
-    </>
-  );
-}
+import Home from "/src/pages/Home";
+import Layout from "/src/layout/Layout";
+import Login from "/src/pages/Login";
+import Signup from "/src/pages/Signup";
+import Shorts from "/src/pages/Shorts";
+import Subscriptions from "/src/pages/Subscriptions";
+import VideoPlayer from "/src/pages/VideoPlayer";
+import ErrorPage from "/src/pages/ErrorPage";
+import YourProfile from "/src/pages/yourProfile";
+import ChannlePage from "/src/pages/ChannelPage";
+
+
+
+const appRoute = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    children: [
+      {
+        index: true, element: <Home /> 
+      },
+      {
+        path: '/login', element: (
+            <Login />
+      )
+      },
+      {
+        path: '/signin', element: <Signup />
+      },
+      {
+        path: '/watch/:id', element: <VideoPlayer />
+      },
+      {
+        path: '/shorts', element: <Shorts />
+      },
+      {
+        path: '/Subscriptions', element: <Subscriptions />
+      },
+      {
+        path: '/profile', element: <YourProfile />
+      },
+      {
+        path: '/in/:channelName', element: <ChannlePage />
+      },
+    ],
+    errorElement:<ErrorPage />
+  }
+]);
+
+export default appRoute

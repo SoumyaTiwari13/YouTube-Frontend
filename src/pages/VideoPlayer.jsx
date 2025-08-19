@@ -1,89 +1,86 @@
 import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import api from '../services/api';
-import { useAuth } from '../context/AuthContext';
+import { useLocation, useParams } from 'react-router-dom';
+import { findByIdVideoPlay } from '/src/api/api';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import VideoSideBar from '/src/components/VideoSideBar';
+import VideoPlayerBtns from '/src/components/VideoPlayerBtns';
+import VideoDescription from '/src/components/VideoDescription';
+import VideoCommentsPage from '/src/components/VideoCommentsPage';
+import IframVideoPlayer from '/src/components/IframeVideoPlayer';
 
-export default function VideoPlayer() {
+const VideoPlayer = () => {
+  const queryClient = useQueryClient();
+  const [showDescription, setShowDescription] = useState(false);
   const { id } = useParams();
-  const { user } = useAuth();
-  const [video, setVideo] = useState(null);
-  const [comments, setComments] = useState([]);
+  const location = useLocation();
+  const fullId = `${id}${location.search}`;
 
-  const load = async () => {
-    const [v, c] = await Promise.all([
-      api.get(`/videos/${id}`),
-      api.get(`/videos/${id}/comments`)
-    ]);
-    setVideo(v.data);
-    setComments(c.data);
+  const {
+    mutate,
+    isLoading,
+    isError,
+    error,
+    data,
+  } = useMutation({
+    mutationFn: (id) => findByIdVideoPlay({ id }),
+    onSuccess: (data, variables) => {
+      // Store in cache for optional later use
+      queryClient.setQueryData(['video', variables], data);
+    },
+  });
+
+  useEffect(() => {
+    if (fullId) {
+      mutate(fullId);
+    }
+  }, [fullId, mutate]);
+
+  const handleRefetch = () => {
+    mutate(fullId);
   };
 
-  useEffect(() => { load(); /* eslint-disable-next-line */ }, [id]);
+  if (isLoading) {
+    return <div className=' m-0 sm:ml-22 font-bold text-2xl uppercase text-center p-10'>Loading...</div>;
+  }
 
-  const react = async (action) => {
-    await api.post(`/videos/${id}/like`, null, { params: { action } });
-    load();
-  };
+  if (isError) {
+    return <div className=' m-0 sm:ml-22 font-bold text-2xl uppercase text-center p-10'>Error: {error.message}</div>;
+  }
 
-  const addComment = async (e) => {
-    e.preventDefault();
-    const text = new FormData(e.currentTarget).get('text');
-    if (!text) return;
-    await api.post(`/videos/${id}/comments`, { text });
-    e.currentTarget.reset();
-    load();
-  };
+  if (!data) {
+    return <div className=' m-0 sm:ml-22 font-bold text-2xl uppercase text-center p-10'>No data yet</div>;
+  }
 
-  const editComment = async (cid) => {
-    const text = prompt('Edit your comment:');
-    if (!text) return;
-    await api.put(`/comments/${cid}`, { text });
-    load();
-  };
+  const {
+    title,
+    channelId,
+    dislikes,
+    likes,
+    views,
+    description,
+    subscribers,
+    uploadDate,
+    comments,
+    thumbnailUrl,
+  } = data?.data;
 
-  const deleteComment = async (cid) => {
-    if (!confirm('Delete comment?')) return;
-    await api.delete(`/comments/${cid}`);
-    load();
-  };
-
-  if (!video) return <div className="player">Loading…</div>;
-
-  const likes = video.likedBy?.length ?? 0;
-  const dislikes = video.dislikedBy?.length ?? 0;
 
   return (
-    <div className="player">
-      <video controls src={video.url} poster={video.thumbnailUrl} />
-      <h2>{video.title}</h2>
-      <div className="row" style={{gap:16}}>
-        <div>{video.channel?.channelName}</div>
-        <button className="btn" onClick={() => react('like')}>👍 {likes}</button>
-        <button className="btn" onClick={() => react('dislike')}>👎 {dislikes}</button>
+    <div className=' ml-0 sm:ml-21.5  transition-all ease-linear flex gap-3'>
+      <div className="w-full px-2  sm:px-6 md:px-1 transition-all ease-linear mt-1">
+        <IframVideoPlayer />
+        <TitlePage title={title} />
+        <VideoPlayerBtns item={{ likes, dislikes, thumbnailUrl, channelId, subscribers, fullId }} fullId={fullId} />
+        <VideoDescription item={{ showDescription, setShowDescription, views, description, uploadDate }} />
+        <VideoCommentsPage item={comments} fullId={fullId} onCommentPosted={handleRefetch} />
       </div>
-      <p style={{opacity:.9}}>{video.description}</p>
-
-      <h3>Comments</h3>
-      {user && (
-        <form className="comment-box" onSubmit={addComment}>
-          <textarea name="text" placeholder="Add a comment..." />
-          <button className="btn" type="submit">Comment</button>
-        </form>
-      )}
-      <div style={{display:'grid', gap:12}}>
-        {comments.map(c => (
-          <div key={c._id} style={{border:'1px solid #222', padding:12, borderRadius:8}}>
-            <div style={{fontWeight:600}}>{c.user?.username || 'User'}</div>
-            <div>{c.text}</div>
-            {user && c.user && c.user._id === user.id && (
-              <div className="row" style={{gap:8, marginTop:8}}>
-                <button className="btn" onClick={() => editComment(c._id)}>Edit</button>
-                <button className="btn" onClick={() => deleteComment(c._id)}>Delete</button>
-              </div>
-            )}
-          </div>
-        ))}
-      </div>
+      <VideoSideBar />
     </div>
   );
-}
+};
+
+export default VideoPlayer
+
+const TitlePage = ({ title }) => <p className="text-xl font-semibold py-2 capitalize">
+  {title}
+</p>
