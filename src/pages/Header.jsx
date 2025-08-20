@@ -3,6 +3,7 @@ import { Bell, CircleUser, Menu, Mic, Search, Video } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { useMutation } from '@tanstack/react-query';
+import { useQuery } from '@tanstack/react-query';
 import youtubeHomeIcon from '../assets/youtubeHomeIcon.png';
 import youtubeShortIcon from '../assets/youtubeShortIocn.png';
 import { findBycategory, findBySearch, handleAuth } from '../api/api';
@@ -96,27 +97,34 @@ const Header = () => {
 
 export default Header;
 
+
 const FilterVideos = () => {
   const dispatch = useDispatch();
-  const videos = useSelector((state) => state.youtubeSlice.value);
   const [categories, setCategories] = useState([]);
   const [activeTab, setActiveTab] = useState("all");
 
-  const { mutate } = useMutation({
-    mutationFn: (category) => findBycategory({ category }),
-    onSuccess: (res) => dispatch(setVideos(res.data)),
+  // ✅ useQuery fetches whenever activeTab changes
+  const { data, isLoading } = useQuery({
+    queryKey: ["videos", activeTab],
+    queryFn: () => findBycategory(activeTab),
+    keepPreviousData: true,
   });
+  
 
-  useEffect(() => {
-    mutate("all");
-  }, []);
+  console.log(data);
 
+  // ✅ Update Redux & categories when data arrives
   useEffect(() => {
-    if (categories.length === 0 && videos.length > 0) {
-      const uniqueCats = Array.from(new Set(videos.map(v => v.category).filter(Boolean)));
+    if (data?.success) {
+      dispatch(setVideos(data.data));
+
+      // Build unique category list
+      const uniqueCats = Array.from(
+        new Set(data.data.map((v) => v.category).filter(Boolean))
+      );
       setCategories(["all", ...uniqueCats]);
     }
-  }, [videos]);
+  }, [data, dispatch]);
 
   return (
     <nav className="element-with-scrollbar sticky top-14 -ml-2 sm:ml-18 bg-[#0f0f0f] h-[50px] flex items-center overflow-x-auto">
@@ -124,10 +132,7 @@ const FilterVideos = () => {
         {categories.map((tab, i) => (
           <li
             key={tab}
-            onClick={() => {
-              setActiveTab(tab);
-              mutate(tab);
-            }}
+            onClick={() => setActiveTab(tab)} // ✅ triggers new fetch automatically
             className={`px-5 mb-2 h-[35px] mt-2 rounded-md cursor-pointer flex items-center justify-center
               ${activeTab === tab ? "bg-white text-black" : "bg-[#212121] text-white hover:bg-[#505050]"}
               ${i === 0 ? "ml-2" : ""}`}
@@ -135,6 +140,7 @@ const FilterVideos = () => {
             {tab}
           </li>
         ))}
+        {isLoading && <li className="text-gray-400">Loading...</li>}
       </ul>
     </nav>
   );

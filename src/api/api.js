@@ -16,10 +16,8 @@ export const findByIdVideoPlay = async ({ id }) => {
 };
 
 //  FIND BY CATEGORY 
-export const findBycategory = async ({ category }) => {
-  const response = await axios.post(`https://youtube-backend-gmra.onrender.com/category`, {
-    category,
-  });
+export const findBycategory = async (val) => {
+  const response = await axios.get(`https://youtube-backend-gmra.onrender.com/category?category=${val}`);
   return response.data;
 };
 
@@ -43,7 +41,7 @@ export const signinAccount = async ({ username, email, password }) => {
   return response.data;
 };
 
-//  LIKE A VIDOE 
+//  LIKE A VIDEO
 export const handleLikeVideo = async ({ userId, videoId }) => {
   try {
     const response = await axios.post(`https://youtube-backend-gmra.onrender.com/video/like/increment`, {
@@ -114,6 +112,7 @@ export const handleAuth = async ({ authToken }) => {
     return { success: false };
   }
 };
+
 
 
 

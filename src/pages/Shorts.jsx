@@ -3,7 +3,7 @@ const Shorts = () => {
   return (
     <div className="px-4 pt-4 w-full flex justify-center">
       <div className="flex flex-col gap-4 w-full max-w-[516px]">
-        {[1,2,3].map((_, index) => (
+        {[1,2,3,4].map((_, index) => (
           <video
             key={index}
             controls
