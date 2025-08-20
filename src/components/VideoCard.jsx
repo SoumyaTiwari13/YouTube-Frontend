@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom"
 
 const VideoCard = ({ data }) => {
     const navigate = useNavigate();
-    const { videoId, thumbnailUrl, views, uploadDate, channelId } = data;
+    const { videoId, thumbnailUrl, views, uploadDate, channelId,url } = data;
 
     const isoString = uploadDate;
     const date = new Date(isoString);
@@ -21,7 +21,7 @@ const VideoCard = ({ data }) => {
     const formattedViews = formatViews(views);
 
     return (
-        <div onClick={() => navigate(`/watch/${videoId}`)} className=" overflow-hidden cursor-pointer  h-[343.61px] ml-2 py-2 ">
+        <div onClick={() => navigate(`/watch/${url}`)} className=" overflow-hidden cursor-pointer  h-[343.61px] ml-2 py-2 ">
             <img src={thumbnailUrl} className="object-cover w-full  sm:w-[393.99px] h-[221.61px] rounded-md" />
             <div className=" flex py-1 gap-3 h-[122px] mt-2">
                 <img src={data?.thumbnailUrl} className="object-cover  bg-[#f2f2f2] border-none w-[36px]   rounded-full h-[36px] min-w-[36px] " />
@@ -38,4 +38,4 @@ const VideoCard = ({ data }) => {
     )
 }
 
-export default VideoCard
+export default VideoCard;

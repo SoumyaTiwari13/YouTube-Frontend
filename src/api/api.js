@@ -1,15 +1,15 @@
 import axios from 'axios';
 
 
-//  GET AL VIDEO 
+//  GET ALL VIDEO 
 export const youtubeAllvideos = async () => {
-  const response = await axios.get(`https://backendyoutube-production-1394.up.railway.app/api/v1/youtube`);
+  const response = await axios.get(`https://youtube-backend-gmra.onrender.com/videos`);
   return response.data;
 };
 
 // PLAY WITH VIDEO ID
 export const findByIdVideoPlay = async ({ id }) => {
-  const response = await axios.post(`https://backendyoutube-production-1394.up.railway.app/api/v1/youtube/watch`, {
+  const response = await axios.get(`https://youtube-backend-gmra.onrender.com/videos/:id`, {
     id,
   });
   return response.data;
@@ -17,19 +17,21 @@ export const findByIdVideoPlay = async ({ id }) => {
 
 //  FIND BY CATEGORY 
 export const findBycategory = async ({ category }) => {
-  const response = await axios.post(`https://backendyoutube-production-1394.up.railway.app/api/v1/youtube/category`, {
+  const response = await axios.post(`https://youtube-backend-gmra.onrender.com/category`, {
     category,
   });
   return response.data;
 };
 
+
 // SEARCH BY KEYWORD
 export const findBySearch = async ({ search }) => {
-  const response = await axios.post(`https://backendyoutube-production-1394.up.railway.app/api/v1/youtube/search`, {
+  const response = await axios.post(`https://youtube-backend-gmra.onrender.com/search`, {
     search,
   });
   return response.data;
 };
+
 
 //  CREATE ACCOUNT
 export const signinAccount = async ({ username, email, password }) => {
@@ -39,6 +41,20 @@ export const signinAccount = async ({ username, email, password }) => {
     password
   });
   return response.data;
+};
+
+//  LIKE A VIDOE 
+export const handleLikeVideo = async ({ userId, videoId }) => {
+  try {
+    const response = await axios.post(`https://youtube-backend-gmra.onrender.com/video/like/increment`, {
+      videoId,
+      userId
+    });
+    return response.data;
+  } catch (error) {
+    console.error('Auth failed:', error?.response?.data || error.message);
+    return { success: false };
+  }
 };
 
 //  LOGIN ACCOUNT
@@ -52,7 +68,7 @@ export const loginAccount = async ({ email, password }) => {
 
 // CREATE COMMENT
 export const createComments = async ({ comments, videoId, authToken }) => {
-  const response = await axios.post(`https://backendyoutube-production-1394.up.railway.app/api/v1/youtube/comments`, {
+  const response = await axios.post(`https://youtube-backend-gmra.onrender.com/:id/comments`, {
     comments, videoId, authToken
   });
   return response.data;
@@ -62,7 +78,7 @@ export const createComments = async ({ comments, videoId, authToken }) => {
 export const DeleteComments = async ({ userId,
   videoId,
   commentId, authToken }) => {
-  const response = await axios.post(`https://backendyoutube-production-1394.up.railway.app/api/v1/youtube/comment/delete`, {
+  const response = await axios.delete(`https://youtube-backend-gmra.onrender.com/:commentId`, {
     userId,
     videoId,
     commentId,
@@ -74,7 +90,7 @@ export const DeleteComments = async ({ userId,
 
 // UPDATE COMMENT
 export const UpdateComments = async ({ userId, videoId, commentId, authToken, updatedText }) => {
-  const response = await axios.post(`https://backendyoutube-production-1394.up.railway.app/api/v1/youtube/comment/edit`, {
+  const response = await axios.put(`https://youtube-backend-gmra.onrender.com/:commentId`, {
     userId,
     videoId,
     commentId,
@@ -87,7 +103,7 @@ export const UpdateComments = async ({ userId, videoId, commentId, authToken, up
 // CHECK AUTH USER IS VALID OR NOT 
 export const handleAuth = async ({ authToken }) => {
   try {
-    const response = await axios.get(`https://backendyoutube-production-1394.up.railway.app/api/v1/auth`, {
+    const response = await axios.get(`https://youtube-backend-gmra.onrender.com/auth`, {
       headers: {
         Authorization: `Bearer ${authToken}`,
       },
@@ -99,23 +115,11 @@ export const handleAuth = async ({ authToken }) => {
   }
 };
 
-//  LIKE A VIDOE 
-export const handleLikeVideo = async ({ userId, videoId }) => {
-  try {
-    const response = await axios.post(`https://backendyoutube-production-1394.up.railway.app/api/v1/youtube/video/like/increment`, {
-      videoId,
-      userId
-    });
-    return response.data;
-  } catch (error) {
-    console.error('Auth failed:', error?.response?.data || error.message);
-    return { success: false };
-  }
-};
+
 
 export const handleCreateChannle = async ({ id,channelName }) => {
   try {
-    const response = await axios.post(`https://backendyoutube-production-1394.up.railway.app/api/v1/youtube/create/channle`, {
+    const response = await axios.post(`https://youtube-backend-gmra.onrender.com/channel`, {
       id,
       channelName
     });

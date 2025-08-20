@@ -15,66 +15,68 @@ const VideoPlayer = () => {
   const location = useLocation();
   const fullId = `${id}${location.search}`;
 
-  const {
-    mutate,
-    isLoading,
-    isError,
-    error,
-    data,
-  } = useMutation({
-    mutationFn: (id) => findByIdVideoPlay({ id }),
-    onSuccess: (data, variables) => {
-      // Store in cache for optional later use
-      queryClient.setQueryData(['video', variables], data);
-    },
-  });
 
-  useEffect(() => {
-    if (fullId) {
-      mutate(fullId);
-    }
-  }, [fullId, mutate]);
+  // const {
+  //   mutate,
+  //   isLoading,
+  //   isError,
+  //   error,
+  //   data,
+  // } = useMutation({
+  //   mutationFn: (id) => findByIdVideoPlay({ id }),
+  //   onSuccess: (data, variables) => {
+  //     queryClient.setQueryData(['video', variables], data);
+  //   },
+  // });
 
-  const handleRefetch = () => {
-    mutate(fullId);
-  };
+  // useEffect(() => {
+  //   if (fullId) {
+  //     mutate(fullId);
+  //   }
+  // }, [fullId, mutate]);
 
-  if (isLoading) {
-    return <div className=' m-0 sm:ml-22 font-bold text-2xl uppercase text-center p-10'>Loading...</div>;
-  }
+  // const handleRefetch = () => {
+  //   mutate(fullId);
+  // };
 
-  if (isError) {
-    return <div className=' m-0 sm:ml-22 font-bold text-2xl uppercase text-center p-10'>Error: {error.message}</div>;
-  }
+  // if (isLoading) {
+  //   return <div className=' m-0 sm:ml-22 font-bold text-2xl uppercase text-center p-10'>Loading...</div>;
+  // }
 
-  if (!data) {
-    return <div className=' m-0 sm:ml-22 font-bold text-2xl uppercase text-center p-10'>No data yet</div>;
-  }
+  // if (isError) {
+  //   return <div className=' m-0 sm:ml-22 font-bold text-2xl uppercase text-center p-10'>Error: {error.message}</div>;
+  // }
 
-  const {
-    title,
-    channelId,
-    dislikes,
-    likes,
-    views,
-    description,
-    subscribers,
-    uploadDate,
-    comments,
-    thumbnailUrl,
-  } = data?.data;
+  // if (!data) {
+  //   return <div className=' m-0 sm:ml-22 font-bold text-2xl uppercase text-center p-10'>No data yet</div>;
+  // }
+
+  // const {
+  //   title,
+  //   channelId,
+  //   dislikes,
+  //   likes,
+  //   views,
+  //   description,
+  //   subscribers,
+  //   uploadDate,
+  //   comments,
+  //   thumbnailUrl,
+  // } = data?.data;
+
+  
 
 
   return (
     <div className=' ml-0 sm:ml-21.5  transition-all ease-linear flex gap-3'>
       <div className="w-full px-2  sm:px-6 md:px-1 transition-all ease-linear mt-1">
         <IframVideoPlayer />
-        <TitlePage title={title} />
-        <VideoPlayerBtns item={{ likes, dislikes, thumbnailUrl, channelId, subscribers, fullId }} fullId={fullId} />
-        <VideoDescription item={{ showDescription, setShowDescription, views, description, uploadDate }} />
-        <VideoCommentsPage item={comments} fullId={fullId} onCommentPosted={handleRefetch} />
+        {/* <TitlePage title={title} /> */}
+        {/* <VideoPlayerBtns item={{ likes, dislikes, thumbnailUrl, channelId, subscribers, fullId }} fullId={fullId} /> */}
+        {/* <VideoDescription item={{ showDescription, setShowDescription, views, description, uploadDate }} /> */}
+        {/* <VideoCommentsPage item={comments} fullId={fullId} onCommentPosted={handleRefetch} /> */}
       </div>
-      <VideoSideBar />
+      {/* <VideoSideBar /> */}
     </div>
   );
 };

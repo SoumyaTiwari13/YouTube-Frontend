@@ -16,12 +16,15 @@ const Home = () => {
     refetchOnWindowFocus: false,
   });
 
+  console.log(data);
+  
+
   useEffect(() => {
     const interval = setInterval(() => {
       refetch({ cancelRefetch: false });
     }, 60000);
-    if (data?.data) {
-      dispatch(setVideos(data.data));
+    if (data) {
+      dispatch(setVideos(data));
     }
     return () => clearInterval(interval);
   }, [data, dispatch, refetch]);

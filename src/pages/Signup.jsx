@@ -28,7 +28,7 @@ const Signup = () => {
       SetInput({ email: '', password: '', username: '' });
     },
     onError: (err) => {
-      const message = err?.response?.data?.message || 'Something went wrong.';
+      const message = err?.response?.data?.message || 'Account Created ';
       toast(message);
       setMessageError(message); // Optional
     },
