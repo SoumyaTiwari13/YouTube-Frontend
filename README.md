@@ -3,7 +3,8 @@
 A full-stack YouTube Clone application built with the MERN stack (MongoDB, Express.js, React.js, Node.js).
 Users can register/login, create channels, upload and manage videos, like/dislike, comment, and explore videos by category or search.
 
-
+GITHUB PROJECT LINK - https://github.com/SoumyaTiwari13/YouTube-Backend
+                      https://github.com/SoumyaTiwari13/YouTube-Frontend
 
 🚀 Tech Stack
 
